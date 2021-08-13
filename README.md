@@ -1,0 +1,1 @@
+# sui_hiring_bot
