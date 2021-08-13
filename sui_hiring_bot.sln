@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sui_hiring_bot", "sui_hiring_bot\sui_hiring_bot.csproj", "{1CD6C5D3-4B9F-4207-81D1-E1D23115E228}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CD6C5D3-4B9F-4207-81D1-E1D23115E228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CD6C5D3-4B9F-4207-81D1-E1D23115E228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CD6C5D3-4B9F-4207-81D1-E1D23115E228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CD6C5D3-4B9F-4207-81D1-E1D23115E228}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
