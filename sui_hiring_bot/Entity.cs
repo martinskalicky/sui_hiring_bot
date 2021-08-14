@@ -49,8 +49,30 @@ namespace sui_hiring_bot
                     HttpResponseMessage response = await httpClient.GetAsync(characterName);
                     if (response.IsSuccessStatusCode)
                     {
-                        String resp = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine(resp);
+                        //String resp = await response.Content.ReadAsStringAsync();
+                        //Console.WriteLine(resp);
+                        Entity[] entities = await response.Content.ReadAsAsync<Entity[]>();
+                        int numberFound = 0;
+                        String resp = "";
+                        String respDetail = "";
+
+                        foreach (Entity entity in entities)
+                        {
+                            if(entity.type.Equals("character")){
+                                numberFound++;
+                                respDetail += "---------------------------\n";
+                                respDetail += "Name: " + entity.name + "\n";
+                                respDetail += "Id: " + entity.id + "\n";
+                                respDetail += "---------------------------";
+                            }
+                        }
+                        if(numberFound > 0){
+                            resp = numberFound + " character(s) found with that name:\n" + respDetail;
+                        }
+                        else{
+                            resp = "No characters found with that name.";
+                        }
+
                         await message.Channel.SendMessageAsync(resp);
                     }
                     else
