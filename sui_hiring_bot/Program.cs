@@ -20,9 +20,7 @@ namespace sui_hiring_bot
             _client.Log += Log;
             _channelId = Convert.ToUInt64(Environment.GetEnvironmentVariable("CHANNEL_ID"));
             _client.MessageReceived += MessageReceived;
-
             _token = Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN");
-            Console.WriteLine("_token = " + _token);
 
             await _client.LoginAsync(TokenType.Bot, _token);
             await _client.StartAsync();
