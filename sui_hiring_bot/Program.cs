@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -31,9 +32,17 @@ namespace sui_hiring_bot
         {
             if (_client.GetChannel(_channelId) == message.Channel && message.Content.Contains("!scan"))
             {
-                String[] ships = new String[] { "hulk" };
-                String searchResult = new ZkillboardScanShips().ScanForShips(ships).GetAwaiter().GetResult();
-                await message.Channel.SendMessageAsync(searchResult);
+                //String[] ships = new String[] { "Hulk" };
+                var searchResult = ZkillboardScanShips.ScanForShips();
+                /*foreach (var pilot in searchResult)
+                {
+                    message.Channel.SendMessageAsync($"Pilot Name: {pilot.Item1} \n System: {pilot.Item2} \n CharacterID: {pilot.Item3}");
+                }*/
+                await message.Channel.SendMessageAsync($"Total pilots found: {searchResult.Count}.");
+                await message.Channel.SendMessageAsync($"Adding to database.");
+                await message.Channel.SendMessageAsync($"Database OK.");
+                await message.Channel.SendMessageAsync($"Preparing for emails.");
+                await message.Channel.SendMessageAsync($"Email QUE OK.");
             }
             if (_client.GetChannel(_channelId) == message.Channel && message.Content.Contains("!character"))
             {
