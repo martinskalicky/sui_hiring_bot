@@ -12,7 +12,7 @@ namespace sui_hiring_bot
             {
                 if (DatabaseHandler.ExecuteScalar("SELECT 1 FROM job_table WHERE status='ACTIVE'") == "1")
                 {
-                    message.Channel.SendMessageAsync("Process already running.");
+                    message.Channel.SendMessageAsync("Process already running. You can not run this twice.");
                     return;
                 }
                 DatabaseHandler.ExecuteNonQuery("INSERT INTO job_table(status) VALUES('ACTIVE')");
