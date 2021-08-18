@@ -20,7 +20,7 @@ namespace sui_hiring_bot
                 {
                     var builder = new EmbedBuilder();
                     builder.WithColor(Color.Magenta);
-                    builder.WithTitle("Recruitment table - results");
+                    builder.WithTitle("Recruitment - results table");
 
                     var activeResults =
                         DatabaseHandler.ExecuteReaderStringString(
