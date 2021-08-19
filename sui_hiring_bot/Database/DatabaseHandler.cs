@@ -90,6 +90,38 @@ namespace sui_hiring_bot
                 }
             }
         }
+        public static List<Tuple<string, string, string, int>> ExecuteReaderStringStringStringInt(string sqlCommand)
+        {
+            {
+                MySqlConnection client = new MySqlConnection(Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING"));
+                client.Open();
+                var returnData = new List<Tuple<string, string, string, int>>();
+                var command = new MySqlCommand(sqlCommand, client);
+                try
+                {
+                    var reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            returnData.Add(new Tuple<string, string, string, int>(reader.GetString(0), reader.GetString(1), reader.GetString(2), reader.GetInt32(3)));
+                        }
+                    }
+                    reader.Close();
+                    return returnData;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                finally
+                {
+                    client.Close();
+                }
+            }
+        }
     }
     
 }

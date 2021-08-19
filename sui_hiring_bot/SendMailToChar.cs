@@ -8,24 +8,16 @@ namespace sui_hiring_bot
 {
     class SendMailToChar
     {
-        private HttpClient httpClient;
+        public static HttpClient httpClient;
 
-        public async Task<bool> SendMailTo(String characterId)
+        public static async Task<bool> SendMailTo(int characterId, string emailPayload, string token, int characterIdSender)
         {
             try
             {
                 httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Accept.Clear();
 
-                //Mail from Character with ID:
-                //TODO: Get this from database
-                var characterIdSender = 123456;
-                //ESI Token from Sender:
-                //TODO: Get this from database
-                var token = "";
-                //Mail Data
-                //TODO: Add templates for body
-                var json = "{\"approved_cost\": 0,\"body\": \"This is the text body of a message sent by Discord Bot\",\"recipients\": [{\"recipient_id\": " + characterId + ",\"recipient_type\": \"character\"}],\"subject\": \"Its alive!!\"}";
+                var json = "{\"approved_cost\": 0,\"body\": \"" + emailPayload + "\",\"recipients\": [{\"recipient_id\": " + characterId + ",\"recipient_type\": \"character\"}],\"subject\": \"Its alive!!\"}";
 
                 var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

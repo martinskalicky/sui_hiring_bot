@@ -24,11 +24,10 @@ namespace sui_hiring_bot
 
                     var activeResults =
                         DatabaseHandler.ExecuteReaderStringString(
-                            "SELECT ship_name, zkillboard_url FROM target_ships WHERE status='ACTIVE' AND tracked=1");
+                            "SELECT ship_name, ship_id FROM target_ships WHERE status='ACTIVE' AND tracked=1");
                     foreach (var result in activeResults)
                     {
-                        var parsedShipId = result.Item2.Split("/");
-                        var activeSearchResults = WebParser.ScanForShips(parsedShipId[4], result.Item1);
+                        var activeSearchResults = WebParser.ScanForShips(result.Item2, result.Item1);
                         int ignoredPlayers = 0;
                         int alreadyProcessedPlayers = 0;
                         foreach (var activeSearch in activeSearchResults)
@@ -51,11 +50,40 @@ namespace sui_hiring_bot
                         builder.AddField($"{result.Item1}", $"Processed {activeSearchResults.Count-ignoredPlayers-alreadyProcessedPlayers}/50 players\nSkipped {ignoredPlayers} \nAlready in database {alreadyProcessedPlayers}", true);
                     }
 
-                    var potencialCandidates =
+                    var potentialCandidates =
                         DatabaseHandler.ExecuteScalar(
                             "SELECT COUNT(player_name) FROM input_players WHERE system_name >= 0.5");
-                    builder.WithFooter($"Total ship types scanned: {activeResults.Count}\nPotencial candidates: {potencialCandidates}\nProcessed candidates: 0");
+                    builder.WithFooter($"Total ship types scanned: {activeResults.Count}\nPotential candidates: {potentialCandidates}\nProcessed candidates: 0");
                     message.Channel.SendMessageAsync("", false, builder.Build());
+
+                    while (DatabaseHandler.ExecuteScalar("SELECT 1 FROM input_players WHERE status = 'NEW' LIMIT 1") == "1")
+                    {
+                        var processedPlayer = DatabaseHandler.ExecuteReaderStringStringStringInt("SELECT player_name, player_ship, system_name, character_id FROM input_players WHERE status = 'NEW' LIMIT 1");
+                        foreach (var player in processedPlayer)
+                        {
+                            if (Convert.ToDouble(player.Item3) >= 0.5)
+                            {
+                                //TODO: Active tokens, refresh token
+                                var actualTemplateBody =
+                                    DatabaseHandler.ExecuteScalar(
+                                        $"SELECT data FROM email_template WHERE ship_name = '{player.Item2}'");
+                                var result = SendMailToChar.SendMailTo(player.Item4, actualTemplateBody, "ACTIVE_TOKEN",
+                                    123456);
+                                if (result.Result)
+                                {
+                                    DatabaseHandler.ExecuteNonQuery(
+                                        $"UPDATE input_players SET status='PROCESSED' WHERE character_id = {player.Item4}");
+                                    continue;
+                                }
+                                DatabaseHandler.ExecuteNonQuery(
+                                    $"UPDATE input_players SET status='FAILED' WHERE character_id = {player.Item4}");
+                                continue;
+                            }
+                            DatabaseHandler.ExecuteNonQuery(
+                                $"UPDATE input_players SET status='DELAYED' WHERE character_id = {player.Item4}");
+                        }
+                    }
+                    
                     if (DatabaseHandler.ExecuteScalar("SELECT 1 FROM job_table WHERE status='ACTIVE'") == "1")
                     {
                         System.Threading.Thread.Sleep(1800000);
